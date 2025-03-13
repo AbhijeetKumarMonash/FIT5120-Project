@@ -3,6 +3,7 @@ import HomeView from '@/views/HomeView.vue'
 import AboutView from '@/views/AboutView.vue'
 import FAQView from '@/views/FAQView.vue'
 import trends from '@/views/trends.vue'
+import SkinCancerTrends from '@/views/SkinCancerTrends.vue'
 
 const routes = [
   {
@@ -24,6 +25,11 @@ const routes = [
     path: '/trends',
     name: 'trends',
     component: trends,
+  },
+  {
+    path: '/SkinCancerTrends',
+    name: 'SkinCancerTrends',
+    component: SkinCancerTrends,
   },
 ]
 
