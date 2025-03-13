@@ -21,6 +21,7 @@
           <span v-html="weatherIcon"></span>
           {{ weatherData.temperature }}°C - {{ weatherData.weather }}
         </p>
+        <p>☀️ Sunshine Duration: {{ weatherData.sunshineDuration }} hours</p>
       </div>
 
       <!-- UV Index Section -->
@@ -28,9 +29,14 @@
         <h2 :class="uvClass">{{ weatherData.uvIndex }}</h2>
       </div>
 
-      <!-- UV Warning Section -->
-      <div class="info-item" v-if="weatherData.uvIndex >= 6">
-        <p class="uv-warning">⚠️ <strong>Pay Attention to Sun Protection!</strong></p>
+      <!-- UV Warning Section or Positive Message -->
+      <div class="info-item">
+        <p v-if="weatherData.uvIndex >= 5" class="uv-warning">
+          ⚠️ <strong>Pay Attention to Sun Protection!</strong>
+        </p>
+        <p v-else class="uv-good-message">
+          ✅ <strong>It's a great time to be outside! But stay safe! 😎</strong>
+        </p>
       </div>
     </div>
 
@@ -48,6 +54,7 @@
   </div>
 </template>
 
+--- ### **📌 JavaScript Logic (Fixed UV Index Handling)** ```vue
 <script setup>
 import { ref } from 'vue'
 
@@ -58,7 +65,6 @@ const weatherIcon = ref('')
 // OpenWeather API Key (Replace with your own)
 const OPENWEATHER_API_KEY = '06a8a6ffd268af3a2afd6c6b4a669221'
 
-// Fetch Weather & UV Index Data
 // Fetch Weather & UV Index Data
 const fetchWeatherData = async () => {
   if (!location.value.trim()) {
@@ -93,22 +99,18 @@ const fetchWeatherData = async () => {
     // 🌤 Set the Weather Icon
     setWeatherIcon(weatherInfo.weather[0].main)
 
-    // 3️⃣ Get UV Index Forecast
+    // 3️⃣ Get UV Index Data (New API)
     const uvResponse = await fetch(
-      `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${OPENWEATHER_API_KEY}`,
+      `https://api.openweathermap.org/data/2.5/uvi?lat=${lat}&lon=${lon}&appid=${OPENWEATHER_API_KEY}`,
     )
     const uvData = await uvResponse.json()
 
-    // 4️⃣ Find the Closest UV Index for Current Time
+    // 4️⃣ Check if it's daytime (Nighttime logic implemented)
     let currentUV = 0 // Default: 0 if nighttime
     if (currentTime >= sunrise && currentTime <= sunset) {
-      // Only set UV index if the sun is up
-      const closestUv = uvData.list.find((item) => {
-        const forecastTime = new Date(item.dt * 1000).getHours()
-        const currentHour = new Date().getHours()
-        return forecastTime === currentHour
-      })
-      currentUV = closestUv?.main?.uvi ?? 0 // Use forecast UV or default to 0
+      currentUV = uvData.value || 0 // If UV data available, use it
+    } else {
+      currentUV = 0 // Nighttime, so UV index is 0
     }
 
     // 5️⃣ Calculate Sunshine Duration (Using Sunrise & Sunset)
@@ -119,7 +121,7 @@ const fetchWeatherData = async () => {
       location: name,
       temperature: weatherInfo.main.temp,
       weather: weatherInfo.weather[0].description,
-      uvIndex: currentUV === 0 ? '0 (Nighttime)' : currentUV, // If 0, show Nighttime
+      uvIndex: currentUV === 0 ? '0 (Nighttime)' : currentUV, // Show Nighttime if UV is 0
       sunshineDuration: sunshineDuration,
     }
   } catch (error) {
@@ -143,19 +145,19 @@ const setWeatherIcon = (condition) => {
 
   weatherIcon.value = iconMap[condition] || '🌤️' // Default to partly cloudy
 }
-
-// UV Index Styling
-const uvClass = ref('')
-const setUVClass = (uvIndex) => {
-  if (uvIndex <= 2) uvClass.value = 'low'
-  else if (uvIndex <= 5) uvClass.value = 'moderate'
-  else if (uvIndex <= 7) uvClass.value = 'high'
-  else if (uvIndex <= 10) uvClass.value = 'very-high'
-  else uvClass.value = 'extreme'
-}
 </script>
 
 <style scoped>
+/* Time Picker */
+.search-container input[type='time'] {
+  width: 20%;
+  padding: 10px;
+  border: none;
+  border-radius: 20px;
+  outline: none;
+  font-size: 16px;
+  text-align: center;
+}
 /* Ensure Background Covers the Entire Screen */
 .home-container {
   width: 100vw;
