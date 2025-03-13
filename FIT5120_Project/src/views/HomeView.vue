@@ -30,29 +30,40 @@ const searchUVIndex = () => {
 </script>
 
 <style scoped>
-/* Ensure Home Page Stretches Fully */
+/* Ensure Background Covers the Entire Screen */
 .home-container {
-  width: 90%; /* Takes most of the available width */
-  max-width: 1200px; /* Prevents excessive stretching */
-  margin: auto;
-  padding: 100px 10px;
+  width: 100vw; /* Full viewport width */
+  height: 100vh; /* Full viewport height */
+  background-image: url('@/assets/skybg.jpeg'); /* Ensure correct image path */
+  background-size: cover; /* Ensures the image covers the entire screen */
+  background-position: center; /* Centers the image */
+  background-repeat: no-repeat; /* Prevents repeating */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-align: center;
+  margin: 0; /* Remove any default margin */
+  padding: 0; /* Remove padding */
+  overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
+/* Fix Search Bar Alignment */
 .search-container {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 10px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
+  width: 100%;
 }
 
 .search-container input {
   padding: 10px;
   width: 60%;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  border: none;
+  border-radius: 20px;
+  outline: none;
+  font-size: 16px;
 }
 
 .search-container button {
@@ -60,32 +71,40 @@ const searchUVIndex = () => {
   background-color: #ff7f00;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 20px;
   cursor: pointer;
 }
 
+/* Ensure Content is Centered */
 .uv-index-display {
-  margin-top: 30px;
-  width: 100%;
+  width: 90%;
+  max-width: 600px;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 20px;
+  border-radius: 15px;
+  text-align: center;
+  backdrop-filter: blur(5px);
 }
 
+/* UV Scale */
 .uv-scale {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 15px;
+  gap: 10px;
   width: 100%;
 }
 
 .uv-scale div {
   padding: 12px;
-  width: 80%;
+  width: 100%;
   text-align: center;
   font-weight: bold;
   color: white;
   border-radius: 5px;
 }
 
+/* UV Color Coding */
 .low {
   background: green;
 }

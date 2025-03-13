@@ -14,21 +14,23 @@ import Header from './components/Header.vue'
 </template>
 
 <style scoped>
-/* Full-page layout */
+/* Ensure Full Width and Height */
 .main-container {
   width: 100vw; /* Full screen width */
   height: 100vh; /* Full screen height */
   display: flex;
   flex-direction: column;
-  align-items: center; /* Center content horizontally */
+  align-items: center;
+  justify-content: center; /* Center content vertically */
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Prevents unwanted horizontal scroll */
 }
 
-/* Content layout fix */
+/* Ensure Content Takes Full Width */
 .content {
   flex: 1; /* Make it fill the remaining space */
-  width: 90%; /* Takes most of the available width */
-  max-width: 1200px; /* Prevents content from stretching too much */
-  padding: 40px 20px; /* Increases gap from the top */
-  text-align: center; /* Align text in the center */
+  width: 100%; /* Ensure it fills the full width */
+  text-align: center;
 }
 </style>

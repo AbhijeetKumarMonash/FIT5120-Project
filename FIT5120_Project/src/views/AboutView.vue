@@ -1,13 +1,13 @@
 <template>
   <div class="about-container">
     <h1>About Us</h1>
-    <p>
+    <p class="about-text">
       Our mission is to promote **sun protection and UV awareness**. With increasing cases of **skin
       cancer** due to prolonged sun exposure, this website helps users track real-time **UV index
       levels** and get **personalized sun safety recommendations**.
     </p>
     <h2>Why is UV Awareness Important?</h2>
-    <ul>
+    <ul class="about-list">
       <li>🌞 **Prolonged sun exposure** can cause skin damage and increase cancer risk.</li>
       <li>🧴 Using **SPF 50+ sunscreen** reduces UV damage and aging effects.</li>
       <li>👕 Wearing **UPF-rated clothing, hats, and sunglasses** ensures better protection.</li>
@@ -19,15 +19,20 @@
 <style scoped>
 /* Centering About Page Content */
 .about-container {
+  width: 100vw; /* Full viewport width */
+  height: 100vh; /* Full viewport height */
+  background-image: url('@/assets/skybg.jpeg'); /* Make sure the image path is correct */
+  background-size: cover; /* Ensures the image covers the entire screen */
+  background-position: center; /* Centers the image */
+  background-repeat: no-repeat; /* Prevents repeating */
   display: flex;
   flex-direction: column;
-  align-items: center; /* Centers the text horizontally */
-  justify-content: center; /* Centers the content vertically */
-  width: 100%;
-  max-width: 800px;
-  margin: auto;
-  padding: 40px;
-  text-align: center;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  margin: 0;
+  padding: 0;
 }
 
 /* Style for headings */
@@ -47,5 +52,14 @@ li {
   text-align: left;
   display: flex;
   align-items: center;
+}
+.about-text {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin: 0;
+  color: white;
+}
+.about-list {
+  color: white;
 }
 </style>
