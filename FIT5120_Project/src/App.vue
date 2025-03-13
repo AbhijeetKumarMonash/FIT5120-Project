@@ -5,32 +5,30 @@ import Header from './components/Header.vue'
 <template>
   <div class="main-container">
     <Header />
-    <!-- Include the header for navigation -->
     <main class="content">
       <router-view></router-view>
-      <!-- Loads HomeView or AboutView dynamically -->
     </main>
   </div>
 </template>
 
 <style scoped>
-/* Ensure Full Width and Height */
+/* Ensure Full Width and No Gaps */
 .main-container {
-  width: 100vw; /* Full screen width */
-  height: 100vh; /* Full screen height */
+  width: 100vw; /* Force full width */
+  min-height: 100vh; /* Ensure it fills the viewport */
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center; /* Center content vertically */
+  justify-content: center;
   margin: 0;
   padding: 0;
   overflow-x: hidden; /* Prevents unwanted horizontal scroll */
 }
 
-/* Ensure Content Takes Full Width */
+/* Ensure Content Fills Entire Width */
 .content {
-  flex: 1; /* Make it fill the remaining space */
-  width: 100%; /* Ensure it fills the full width */
+  flex: 1;
+  width: 100%; /* Ensures full width */
   text-align: center;
 }
 </style>

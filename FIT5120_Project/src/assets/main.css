@@ -1,26 +1,15 @@
 @import './base.css';
 
+/* Remove Width Restriction */
 #app {
-  max-width: 1280px;
+  width: 100vw; /* Ensure it takes full viewport width */
+  max-width: 100%; /* Remove fixed 1280px width */
   margin: 0 auto;
   padding: 2rem;
   font-weight: normal;
 }
 
-a,
-.green {
-  text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
-  padding: 3px;
-}
-
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
-  }
-}
-
+/* Remove Grid-Based Layout */
 @media (min-width: 1024px) {
   body {
     display: flex;
@@ -28,8 +17,26 @@ a,
   }
 
   #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    align-items: center;
+    padding: 0;
   }
+}
+
+/* Ensure Full Page Width */
+html,
+body {
+  width: 100vw;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
+/* Fix Bootstrap Container Margins */
+.container {
+  max-width: 100% !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }
