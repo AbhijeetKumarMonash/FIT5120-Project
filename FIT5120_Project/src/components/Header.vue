@@ -10,6 +10,9 @@
           <li>
             <router-link to="/about" class="nav-link" active-class="active">About Us</router-link>
           </li>
+          <li>
+            <router-link to="/faq" class="nav-link" active-class="active">FAQ</router-link>
+          </li>
         </ul>
       </nav>
     </header>
