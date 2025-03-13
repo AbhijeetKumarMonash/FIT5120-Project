@@ -1,11 +1,22 @@
 <template>
   <div class="home-container">
     <h1>UV Index Tracker</h1>
+
+    <!-- Manual Search Input -->
     <div class="search-container">
-      <input type="text" v-model="location" placeholder="Enter location" />
-      <button @click="searchUVIndex">Search</button>
+      <input v-model="location" type="text" placeholder="Enter location" />
+      <button @click="fetchWeatherData">Search</button>
     </div>
 
+    <!-- Display Searched Location Data -->
+    <div v-if="weatherData" class="weather-info">
+      <h2>{{ weatherData.location }}</h2>
+      <p>{{ weatherData.temperature }}°C - {{ weatherData.weather }}</p>
+      <p><strong>UV Index:</strong> {{ weatherData.uvIndex }}</p>
+      <p><strong>Sunshine Duration:</strong> {{ weatherData.sunshineDuration }} hours</p>
+    </div>
+
+    <!-- UV Index Criteria -->
     <div class="uv-index-display">
       <h2>UV Index Criteria</h2>
       <div class="uv-scale">
@@ -23,29 +34,74 @@
 import { ref } from 'vue'
 
 const location = ref('')
+const weatherData = ref(null)
 
-const searchUVIndex = () => {
-  alert(`Searching UV index for: ${location.value}`)
+// OpenWeather API Key (Replace with your own key)
+const OPENWEATHER_API_KEY = '06a8a6ffd268af3a2afd6c6b4a669221'
+
+// Fetch Weather & UV Index Data
+const fetchWeatherData = async () => {
+  if (!location.value.trim()) {
+    alert('Please enter a valid location.')
+    return
+  }
+
+  try {
+    // Get coordinates from location name
+    const geoResponse = await fetch(
+      `https://api.openweathermap.org/geo/1.0/direct?q=${location.value}&limit=1&appid=${OPENWEATHER_API_KEY}`,
+    )
+    const geoData = await geoResponse.json()
+
+    if (!geoData.length) {
+      alert('Location not found')
+      return
+    }
+
+    const { lat, lon, name } = geoData[0]
+
+    // Get weather data
+    const weatherResponse = await fetch(
+      `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${OPENWEATHER_API_KEY}&units=metric`,
+    )
+    const weatherInfo = await weatherResponse.json()
+
+    // Mock UV Index & Sunshine Duration (Replace with actual API if needed)
+    const mockUVIndex = Math.floor(Math.random() * 12) // Random UV Index between 0-11
+    const mockSunshineDuration = Math.floor(Math.random() * 12) + 1 // Random hours 1-12
+
+    // Store Data in weatherData ref
+    weatherData.value = {
+      location: name,
+      temperature: weatherInfo.main.temp,
+      weather: weatherInfo.weather[0].description,
+      uvIndex: mockUVIndex,
+      sunshineDuration: mockSunshineDuration,
+    }
+  } catch (error) {
+    console.error('Error fetching data:', error)
+    alert('Error retrieving data')
+  }
 }
 </script>
 
 <style scoped>
 /* Ensure Background Covers the Entire Screen */
 .home-container {
-  width: 100vw; /* Full viewport width */
-  height: 100vh; /* Full viewport height */
-  background-image: url('@/assets/skybg.jpeg'); /* Ensure correct image path */
-  background-size: cover; /* Ensures the image covers the entire screen */
-  background-position: center; /* Centers the image */
-  background-repeat: no-repeat; /* Prevents repeating */
+  width: 100vw;
+  height: 100vh;
+  background-image: url('@/assets/skybg.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  margin: 0; /* Remove any default margin */
-  padding: 0; /* Remove padding */
-  overflow-x: hidden; /* Prevent horizontal scrolling */
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
 
 /* Fix Search Bar Alignment */
@@ -73,6 +129,17 @@ const searchUVIndex = () => {
   border: none;
   border-radius: 20px;
   cursor: pointer;
+}
+
+/* Weather Info Display */
+.weather-info {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 15px;
+  margin-top: 10px;
+  border-radius: 15px;
+  backdrop-filter: blur(5px);
+  font-size: 18px;
+  color: white;
 }
 
 /* Ensure Content is Centered */
