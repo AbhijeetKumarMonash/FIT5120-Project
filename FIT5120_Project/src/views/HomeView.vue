@@ -36,7 +36,7 @@ import { ref } from 'vue'
 const location = ref('')
 const weatherData = ref(null)
 
-// OpenWeather API Key (Replace with your own key)
+// OpenWeather API Key (Replace with your own)
 const OPENWEATHER_API_KEY = '06a8a6ffd268af3a2afd6c6b4a669221'
 
 // Fetch Weather & UV Index Data
@@ -47,7 +47,7 @@ const fetchWeatherData = async () => {
   }
 
   try {
-    // Get coordinates from location name
+    // 1️⃣ Get Latitude & Longitude from City Name (Free Geocoding API)
     const geoResponse = await fetch(
       `https://api.openweathermap.org/geo/1.0/direct?q=${location.value}&limit=1&appid=${OPENWEATHER_API_KEY}`,
     )
@@ -60,23 +60,30 @@ const fetchWeatherData = async () => {
 
     const { lat, lon, name } = geoData[0]
 
-    // Get weather data
+    // 2️⃣ Get Weather Data (Temperature, Description) - Free API
     const weatherResponse = await fetch(
       `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${OPENWEATHER_API_KEY}&units=metric`,
     )
     const weatherInfo = await weatherResponse.json()
 
-    // Mock UV Index & Sunshine Duration (Replace with actual API if needed)
-    const mockUVIndex = Math.floor(Math.random() * 12) // Random UV Index between 0-11
-    const mockSunshineDuration = Math.floor(Math.random() * 12) + 1 // Random hours 1-12
+    // 3️⃣ Get UV Index (Free API - Deprecated but still works)
+    const uvResponse = await fetch(
+      `https://api.openweathermap.org/data/2.5/uvi?lat=${lat}&lon=${lon}&appid=${OPENWEATHER_API_KEY}`,
+    )
+    const uvData = await uvResponse.json()
 
-    // Store Data in weatherData ref
+    // 4️⃣ Calculate Sunshine Duration (Using Sunrise & Sunset)
+    const sunrise = weatherInfo.sys.sunrise * 1000 // Convert to milliseconds
+    const sunset = weatherInfo.sys.sunset * 1000
+    const sunshineDuration = ((sunset - sunrise) / (1000 * 60 * 60)).toFixed(1) // Convert to hours
+
+    // 5️⃣ Store Data in `weatherData`
     weatherData.value = {
       location: name,
       temperature: weatherInfo.main.temp,
       weather: weatherInfo.weather[0].description,
-      uvIndex: mockUVIndex,
-      sunshineDuration: mockSunshineDuration,
+      uvIndex: uvData.value ?? 'N/A', // If missing, show "N/A"
+      sunshineDuration: sunshineDuration,
     }
   } catch (error) {
     console.error('Error fetching data:', error)
