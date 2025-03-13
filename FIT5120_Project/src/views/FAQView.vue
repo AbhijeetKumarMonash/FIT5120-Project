@@ -37,63 +37,63 @@ const faqs = ref([
     question: 'What is the UV Index, and why is it important?',
     answer:
       'The UV Index measures the strength of ultraviolet radiation from the sun. High UV levels mean increased risk of skin damage, sunburn, and skin cancer.',
-    video: 'https://www.youtube.com/embed/9qzHaw8x6MA',
+    video: 'https://www.youtube.com/embed/YGROFs5tFNA',
     open: false,
   },
   {
     question: 'How can I check the UV Index for my location?',
     answer:
       'You can use our UV Tracker feature to check the real-time UV Index for your selected location. The color-coded system indicates the level of UV hazard.',
-    video: 'https://www.youtube.com/embed/9qzHaw8x6MA',
+    video: 'https://www.youtube.com/embed/gpNEFHfDZ0c',
     open: false,
   },
   {
     question: 'Why should I care about sun protection?',
     answer:
       'Prolonged exposure to UV radiation can cause skin damage, premature aging, and increase the risk of skin cancer. Proper sun protection reduces these risks.',
-    video: 'https://www.youtube.com/embed/9qzHaw8x6MA',
+    video: 'https://www.youtube.com/embed/ZSJITdsTze0',
     open: false,
   },
   {
     question: 'How does UV exposure impact Australia?',
     answer:
       'Australia has one of the highest rates of skin cancer in the world due to high UV radiation. Regular sun protection is necessary to reduce risks.',
-    video: 'https://www.youtube.com/embed/9qzHaw8x6MA',
+    video: 'https://www.youtube.com/embed/wHm0FzpQS4M',
     open: false,
   },
   {
     question: 'How much sunscreen should I apply?',
     answer:
       'A general guideline is about a teaspoon per body part (face, arms, legs, etc.). Adjust based on skin type and UV intensity.',
-    video: 'https://www.youtube.com/embed/9qzHaw8x6MA',
+    video: 'https://www.youtube.com/embed/j6wki7Bpw3w',
     open: false,
   },
   {
     question: 'Do I need to reapply sunscreen?',
     answer:
       'Yes! Sunscreen should be reapplied every 2 hours, especially after swimming or sweating.',
-    video: 'https://www.youtube.com/embed/9qzHaw8x6MA',
+    video: 'https://www.youtube.com/embed/j6wki7Bpw3w',
     open: false,
   },
   {
     question: 'What type of clothing protects against UV radiation?',
     answer:
       'Wear UPF-rated clothing, wide-brim hats, and sunglasses to protect against UV rays. Dark-colored and tightly woven fabrics provide the best protection.',
-    video: 'https://www.youtube.com/embed/9qzHaw8x6MA',
+    video: 'https://www.youtube.com/embed/YGROFs5tFNA',
     open: false,
   },
   {
     question: 'Can I get enough vitamin D while protecting myself from the sun?',
     answer:
       'Yes! You can get vitamin D through a balanced approach—short sun exposure (before 10 AM or after 4 PM) and dietary sources.',
-    video: 'https://www.youtube.com/embed/9qzHaw8x6MA',
+    video: 'https://www.youtube.com/embed/CAqRMr47KWk',
     open: false,
   },
   {
     question: 'What is the best time to go outside safely?',
     answer:
       'The safest times are before 10 AM and after 4 PM when UV levels are lower. Use shade, clothing, and sunscreen when UV levels are high.',
-    video: 'https://www.youtube.com/embed/9qzHaw8x6MA',
+    video: 'https://www.youtube.com/embed/AoUmVgPozSE',
     open: false,
   },
 ])
