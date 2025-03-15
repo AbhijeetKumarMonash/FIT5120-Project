@@ -30,7 +30,7 @@
 <style scoped>
 /* Full width fixed header */
 .fixed-top {
-  width: 100vw; /* Ensure it takes the full viewport width */
+  width: 100%; /* Ensure it takes the full viewport width */
   background-color: #0056b3;
   position: fixed;
   top: 0;

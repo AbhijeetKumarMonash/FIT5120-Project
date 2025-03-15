@@ -57,6 +57,7 @@
 --- ### **📌 JavaScript Logic (Fixed UV Index Handling)** ```vue
 <script setup>
 import { ref } from 'vue'
+import { computed } from "vue";
 
 const location = ref('')
 const weatherData = ref(null)
@@ -145,11 +146,21 @@ const setWeatherIcon = (condition) => {
 
   weatherIcon.value = iconMap[condition] || '🌤️' // Default to partly cloudy
 }
+const uvClass = computed(() => {
+  const uv = weatherData.value.uvIndex;
+  if (uv <= 2) return "low";
+  if (uv <= 5) return "moderate";
+  if (uv <= 7) return "high";
+  if (uv <= 10) return "very-high";
+  if (uv >= 11) return "extreme";
+  else return "nighttime";
+  
+});
 </script>
 
 <style scoped>
 /* Time Picker */
-.search-container input[type='time'] {
+/* .search-container input[type='time'] {
   width: 20%;
   padding: 10px;
   border: none;
@@ -157,7 +168,7 @@ const setWeatherIcon = (condition) => {
   outline: none;
   font-size: 16px;
   text-align: center;
-}
+} */
 /* Ensure Background Covers the Entire Screen */
 .home-container {
   width: 100vw;
@@ -174,6 +185,7 @@ const setWeatherIcon = (condition) => {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+
 }
 
 /* Fix Search Bar Alignment */
@@ -183,6 +195,7 @@ const setWeatherIcon = (condition) => {
   align-items: center;
   gap: 10px;
   width: 100%;
+  margin-bottom: 10px;
 }
 
 .search-container input {
@@ -192,7 +205,7 @@ const setWeatherIcon = (condition) => {
   border-radius: 20px;
   outline: none;
   font-size: 16px;
-}
+} 
 
 .search-container button {
   padding: 10px 20px;
@@ -214,6 +227,8 @@ const setWeatherIcon = (condition) => {
   width: 90%;
   max-width: 800px;
   color: white;
+  margin-top: 10px;  
+  margin-bottom: 10px;
 }
 
 /* Individual Sections */
@@ -252,6 +267,7 @@ const setWeatherIcon = (condition) => {
   border-radius: 15px;
   text-align: center;
   backdrop-filter: blur(5px);
+  margin-top: 10px;
 }
 
 /* UV Scale */
@@ -270,23 +286,26 @@ const setWeatherIcon = (condition) => {
   font-weight: bold;
   color: white;
   border-radius: 5px;
-}
+} 
 
 /* UV Color Coding */
 .low {
-  background: green;
+  background: rgb(129, 234, 129);
 }
 .moderate {
-  background: yellow;
+  background: rgb(240, 240, 95);
   color: black;
 }
 .high {
-  background: orange;
+  background: rgb(251, 183, 56);
 }
 .very-high {
-  background: red;
+  background: rgb(244, 70, 70);
 }
 .extreme {
-  background: purple;
+  background: rgb(198, 88, 198);
+}
+.nighttime {
+  background: rgb(105, 103, 105);
 }
 </style>

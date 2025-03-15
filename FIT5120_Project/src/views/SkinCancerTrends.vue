@@ -1,5 +1,8 @@
 <template>
   <div class="trends-container">
+    <br />
+    <br />
+    <br />
     <h1>Skin Cancer Trends</h1>
 
     <button @click="fetchGraph">Show Graph</button>
@@ -41,5 +44,6 @@ button {
   font-size: 1.2rem;
   border-radius: 10px;
   margin-bottom: 20px;
+  margin-top: 20px;
 }
 </style>
