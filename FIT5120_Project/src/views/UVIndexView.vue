@@ -55,7 +55,7 @@ const graphUrl = ref('')
 
 const fetchGraph = async () => {
   try {
-    const response = await fetch('http://127.0.0.1:5000/api/uv_index_trends')
+    const response = await fetch('https://fit5120-project-1.onrender.com/api/uv_index_trends')
     const data = await response.json()
     if (data.status === 'success') {
       graphUrl.value = data.graph_url
