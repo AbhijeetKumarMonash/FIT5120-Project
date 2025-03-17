@@ -10,7 +10,7 @@ import os
 app = Flask(__name__)
 CORS(app)  # Allow Vue.js frontend to call this API
 
-DATABASE_PATH = "C:/Users/Abhijeet/FIT5120-Project/FIT5120_Project/backend/skin_cancer.db"
+DATABASE_PATH = os.path.join(os.path.dirname(__file__), "skin_cancer.db")
 
 STATIC_DIR = "static"
 HEATMAP_PATH = os.path.join(STATIC_DIR, "uv_index_heatmap.png")
