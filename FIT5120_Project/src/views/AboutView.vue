@@ -1,18 +1,20 @@
 <template>
   <div class="about-container">
     <div class="container">
-      <div class="row">
-        <div class="col-12 text-center">
-          <h1 class="about-title">Our Mission</h1>
-        </div>
+      <div class="text-center">
+        <br />
+        <br />
+        <br />
+        <h1 class="about-title">About Us</h1>
       </div>
+
 
       <!-- Replace Image with Embedded YouTube Video -->
       <div class="row justify-content-center">
         <div class="col-12 video-container">
           <iframe
-            width="100%"
-            height="400"
+            width="90%"
+            height="300"
             src="https://www.youtube.com/embed/SlXptZfWjJM"
             title="Importance of UV Protection"
             frameborder="0"
@@ -55,7 +57,7 @@
   justify-content: center;
   align-items: center;
   margin-bottom: 30px;
-  margin-top: 400px;
+  margin-top: 40px;
 }
 
 iframe {
@@ -65,6 +67,7 @@ iframe {
 h2 {
   color: orange;
   font-weight: bold;
+  margin-top: 15px;
   margin-bottom: 15px;
 }
 /* Ensure Background Covers Entire Screen Properly */

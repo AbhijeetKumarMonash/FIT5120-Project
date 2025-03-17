@@ -1,36 +1,39 @@
 import sqlite3
-import os
+import pandas as pd
 
-# Ensure the backend folder exists
-db_path = os.path.join(os.path.dirname(__file__), "skin_cancer.db")
-conn = sqlite3.connect(db_path)
+# Define the dataset path
+CSV_FILE_PATH = "C:/Users/Abhijeet/FIT5120-Project/FIT5120_Project/backend/df_melanoma.csv"
+DATABASE_PATH = "C:/Users/Abhijeet/FIT5120-Project/FIT5120_Project/backend/skin_cancer.db"
 
+# Connect to SQLite
+conn = sqlite3.connect(DATABASE_PATH)
 cursor = conn.cursor()
 
-# Create a table for skin cancer data
+# 🚀 Drop table if it exists (this will erase existing data)
+cursor.execute("DROP TABLE IF EXISTS melanoma_cases")
+
+# Create table
 cursor.execute('''
-CREATE TABLE IF NOT EXISTS skin_cancer_trend (
+CREATE TABLE IF NOT EXISTS melanoma_cases (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    year INTEGER,
-    cases INTEGER
+    Year INTEGER,
+    StateOrTerritory TEXT,
+    Count INTEGER
 )
 ''')
 
-# Sample data for skin cancer trends (modify as needed)
-data = [
-    (2015, 1200),
-    (2016, 1350),
-    (2017, 1400),
-    (2018, 1500),
-    (2019, 1600),
-    (2020, 1750),
-    (2021, 1800),
-]
+# Read CSV and insert data into the table
+df = pd.read_csv(CSV_FILE_PATH)
 
-# Insert data into table
-cursor.executemany("INSERT INTO skin_cancer_trend (year, cases) VALUES (?, ?)", data)
+# Remove 'Australia' data
+df = df[df['State or Territory'] != 'Australia']
 
-# Commit and close the connection
+# Insert data
+for _, row in df.iterrows():
+    cursor.execute("INSERT INTO melanoma_cases (Year, StateOrTerritory, Count) VALUES (?, ?, ?)", 
+                   (row["Year"], row["State or Territory"], row["Count"]))
+
+# Commit changes and close connection
 conn.commit()
 conn.close()
 
