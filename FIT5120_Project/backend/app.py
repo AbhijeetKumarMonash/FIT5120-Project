@@ -1,7 +1,9 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify,send_file
 from flask_cors import CORS
 import sqlite3
 import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
 import plotly.express as px
 import os
 
@@ -9,6 +11,10 @@ app = Flask(__name__)
 CORS(app)  # Allow Vue.js frontend to call this API
 
 DATABASE_PATH = "C:/Users/Abhijeet/FIT5120-Project/FIT5120_Project/backend/skin_cancer.db"
+
+STATIC_DIR = "static"
+HEATMAP_PATH = os.path.join(STATIC_DIR, "uv_index_heatmap.png")
+
 
 # Fetch data from SQLite
 def get_data_from_db():
@@ -24,6 +30,44 @@ def get_data_from_db():
     # Convert to list of dictionaries
     return [{"Year": row[0], "State or Territory": row[1], "Count": row[2]} for row in data]
 
+@app.route("/api/uv_index_trends", methods=["GET"])
+def generate_uv_heatmap():
+    # Connect to database
+    conn = sqlite3.connect(DATABASE_PATH)
+    
+    query = """
+    SELECT month, location, AVG(uv_index) AS AvgUV 
+    FROM uv_index_data 
+    GROUP BY month, location
+    """
+    
+    df = pd.read_sql_query(query, conn)
+    conn.close()
+
+    # Pivot table: location as index, month as columns
+    heatmap_data = df.pivot(index="location", columns="month", values="AvgUV")
+
+    # Generate heatmap
+    plt.figure(figsize=(12, 6))
+    sns.heatmap(heatmap_data, cmap="coolwarm", annot=True, fmt=".2f", linewidths=0.5)
+
+    # Set title and labels
+    plt.title("Average Monthly UV Index (2018-2020) - Australian States & Territories")
+    plt.xlabel("Month")
+    plt.ylabel("Location")
+
+    # Save heatmap image
+    plt.savefig(HEATMAP_PATH)
+    plt.close()
+
+    # ✅ Ensure the path is correctly formatted for the frontend
+    graph_url = HEATMAP_PATH.replace("\\", "/")  # Replace backslashes with forward slashes
+
+    return jsonify({"status": "success", "graph_url": f"http://127.0.0.1:5000/{graph_url}"})
+
+
+
+# API Route to fetch skin cancer data and generate a Plotly line chart
 @app.route("/api/skin_cancer_trends", methods=["GET"])
 def generate_plotly_graph():
     # Fetch data from the database

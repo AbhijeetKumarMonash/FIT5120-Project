@@ -21,6 +21,11 @@
               >SkinCancerTrends</router-link
             >
           </li>
+          <li>
+            <router-link to="/UVIndex" class="nav-link" active-class="active"
+              >UV-Index Trends</router-link
+            >
+          </li>
         </ul>
       </nav>
     </header>

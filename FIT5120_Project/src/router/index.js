@@ -4,6 +4,7 @@ import AboutView from '@/views/AboutView.vue'
 import FAQView from '@/views/FAQView.vue'
 import trends from '@/views/trends.vue'
 import SkinCancerTrends from '@/views/SkinCancerTrends.vue'
+import UVIndexView from '@/views/UVIndexView.vue'
 
 const routes = [
   {
@@ -30,6 +31,11 @@ const routes = [
     path: '/SkinCancerTrends',
     name: 'SkinCancerTrends',
     component: SkinCancerTrends,
+  },
+  {
+    path: '/UVIndex',
+    name: 'UVIndex',
+    component: UVIndexView,
   },
 ]
 
