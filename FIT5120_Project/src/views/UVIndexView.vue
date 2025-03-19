@@ -78,56 +78,122 @@ import { ref, onMounted } from 'vue'
 
 // onMounted(fetchGraph)
 
-
-/////
 const loading = ref(true);
-const series = ref([]); 
+const series = ref([]);
+// const chartOptions = ref({
+//   chart: {
+//     height: 350,
+//     type: 'heatmap',
+//   },
+//   stroke: {
+//     width: 0
+//   },
+//   plotOptions: {
+//     heatmap: {
+//       radius: 0,
+//       enableShades: false, 
+//       colorScale: {
+//         ranges: [
+//           { from: 0, to: 0.5, color: "#f7fcf0" },
+//           { from: 0.5, to: 1, color: "#e0f3db" },
+//           { from: 1, to: 1.5, color: "#ccebc5" },
+//           { from: 1.5, to: 2, color: "#a8ddb5" },
+//           { from: 2, to: 2.5, color: "#7bccc4" },
+//           { from: 2.5, to: 3, color: "#4eb3d3" },
+//           { from: 3, to: 3.5, color: "#2b8cbe" },
+//           { from: 3.5, to: 4, color: "#08589e" }
+//         ]
+//       }
+//     }
+//   },
+//   dataLabels: {
+//     enabled: true,
+//     style: {
+//       colors: ['#000'] // text color
+//   },
+//   xaxis: {
+//     type: 'category',
+//     categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+//   },
+//   title: {
+//     text: "Average Monthly UV Index (2018-2020) - Australian States & Territories"
+//   }
+//   }});
+
+// **get uv index**
+
 const chartOptions = ref({
   chart: {
     height: 350,
     type: "heatmap",
   },
-  dataLabels: {
-    enabled: false,
+  plotOptions: {
+    heatmap: {
+      enableShades: false, // Disable gradient shading
+      colorScale: {
+        ranges: [
+          { from: 0, to: 0.5, color: "#f5e695" },  // Bright yellow
+          { from: 0.5, to: 1, color: "#FEC44F" },  // Yellow-orange
+          { from: 1, to: 1.5, color: "#FE9929" },  // Light orange
+          { from: 1.5, to: 2, color: "#EC7014" },  // Dark orange
+          { from: 2, to: 2.5, color: "#CC4C02" },  // Reddish-brown
+          { from: 2.5, to: 3, color: "#8C2D04" }   // Dark brown
+        ],
+      },
+    },
   },
-  colors: ["#ff6a41"],
-  title: {
-    text: "UV Index HeatMap (States vs. Months)",
+  dataLabels: {
+    enabled: true,
+    style: {
+      colors: ["#fff"], // White text on colored background
+    },
   },
   xaxis: {
     categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
   },
+  title: {
+    text: "Average Monthly UV Index (2018-2020) - Australian States & Territories",
+  },
 });
 
-// get UV Index
+
+
 const fetchData = async () => {
   try {
     const response = await fetch("http://127.0.0.1:5001/api/uv_index");
-    const data = await response.json();
+    const result = await response.json();
 
-    if (data.status === "success") {
-      const groupedData = {};
-      data.data.forEach(({ location, month, uv_index }) => {
-        if (!groupedData[location]) {
-          groupedData[location] = Array(12).fill(null);
-        }
-        groupedData[location][month - 1] = parseFloat(uv_index).toFixed(2);
-      });
+    console.log("API Response Data:", result);
 
-      series.value = Object.keys(groupedData).map((state) => ({
-        name: state,
-        data: groupedData[state].map((value, index) => ({
-          x: chartOptions.value.xaxis.categories[index],
-          y: value ? parseFloat(value) : 0, 
-        })),
-      }));
-
-      loading.value = false;
+    if (!Array.isArray(result.data)) {
+      throw new Error("API data is not an array");
     }
+
+    // Group data by location
+    const groupedData = result.data.reduce((acc, item) => {
+      if (!acc[item.location]) {
+        acc[item.location] = new Array(12).fill(null);
+      }
+      acc[item.location][item.month - 1] = parseFloat(item.uv_index.toFixed(2)); // Keep two decimal places
+      return acc;
+    }, {});
+
+    // Convert data to ApexCharts format
+    series.value = Object.entries(groupedData).map(([location, uv_values]) => ({
+      name: location,
+      data: uv_values.map((uv, index) => ({
+        x: chartOptions.value.xaxis.categories[index], // Month name
+        y: uv || 0 // Ensure there's a value
+      }))
+    }));
+
+    loading.value = false;
+
   } catch (error) {
-    console.error("Error fetching UV data:", error);
+    console.error("Error fetching UV Index data:", error);
   }
 };
+
 
 onMounted(fetchData);
 </script>
