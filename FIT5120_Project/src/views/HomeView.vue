@@ -1,11 +1,15 @@
 <template>
   <div class="home-container">
+    <br />
+    <br />
     <h1>UV Index Tracker</h1>
 
     <!-- Manual Search Input -->
     <div class="search-container">
-      <input v-model="location" type="text" placeholder="Enter location" />
+      <input v-model="location" type="text" placeholder="Enter an Australian suburb code (e.g., 3000)" />
       <button @click="fetchWeatherData">Search</button>
+      
+      
     </div>
 
     <!-- Display Weather & UV Data in a Row -->
@@ -44,49 +48,107 @@
     <div class="uv-index-display">
       <h2>UV Index Criteria</h2>
       <div class="uv-scale">
-        <div class="low">Low (0-2)</div>
-        <div class="moderate">Moderate (3-5)</div>
-        <div class="high">High (6-7)</div>
-        <div class="very-high">Very High (8-10)</div>
-        <div class="extreme">Extreme (11+)</div>
+        <button
+          v-for="(info, level) in uvInfoMap"
+          :key="level"
+          :class="[level, { selected: selectedUV === level }]"
+          @click="selectUV(level)"
+        >
+          {{ info.label }}
+        </button>
       </div>
+      <div v-if="selectedUV" class="uv-info">
+        <h3>{{ uvInfoMap[selectedUV].label }}</h3>
+        <p>{{ uvInfoMap[selectedUV].description }}</p>
+      </div>
+      
     </div>
+    <SkinTone :uvIndex="uvIndexComputed" />
   </div>
 </template>
 
 --- ### **📌 JavaScript Logic (Fixed UV Index Handling)** ```vue
 <script setup>
+import SkinTone from '@/components/SkinTone.vue';
 import { ref } from 'vue'
 import { computed } from "vue";
 
 const location = ref('')
-const weatherData = ref(null)
+const weatherData = ref('');
+
 const weatherIcon = ref('')
+
+const isValid = computed(() => /^\d{4}$/.test(location.value));
+
+const uvIndexComputed = computed(() => {
+  if (!weatherData.value || typeof weatherData.value.uvIndex !== "number") {
+    return null; // 
+  }
+  return weatherData.value.uvIndex;
+});
+
+
 
 // OpenWeather API Key (Replace with your own)
 const OPENWEATHER_API_KEY = '06a8a6ffd268af3a2afd6c6b4a669221'
+const GOOGLE_MAPS_API_KEY = 'AIzaSyCHFOVKWeydFMRF6FL9iVbj1ooWuPuluP8'
 
 // Fetch Weather & UV Index Data
 const fetchWeatherData = async () => {
+  if (!isValid.value) {
+    alert('Please enter a valid 4-digit suburb code.')
+    return;
+  }
   if (!location.value.trim()) {
-    alert('Please enter a valid location.')
+    alert('Please enter a valid suburb code.')
     return
   }
 
-  try {
-    // 1️⃣ Get Latitude & Longitude
-    const geoResponse = await fetch(
-      `https://api.openweathermap.org/geo/1.0/direct?q=${location.value}&limit=1&appid=${OPENWEATHER_API_KEY}`,
-    )
-    const geoData = await geoResponse.json()
+  // try {
+  //   // 1️⃣ Get Latitude & Longitude
+  //   const geoResponse = await fetch(
+  //     `https://api.openweathermap.org/geo/1.0/direct?q=${location.value}&limit=1&appid=${OPENWEATHER_API_KEY}`,
+  //   )
+  //   const geoData = await geoResponse.json()
 
-    if (!geoData.length) {
-      alert('Location not found')
+  //   if (!geoData.length) {
+  //     alert('Location not found')
+  //     return
+  //   }
+
+  //   const { lat, lon, name } = geoData[0]
+    try {
+      // 1️⃣ Get Latitude & Longitude from Google Geocode API
+      const geoResponse = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${location.value},AU&key=${GOOGLE_MAPS_API_KEY}`
+      )
+      const geoData = await geoResponse.json()
+
+      if (!geoData.results.length) {
+        alert('Sorry!Location not found')
+        return
+      }
+
+      // Extract lat & lon
+      const { lat, lng: lon } = geoData.results[0].geometry.location
+
+      // Extract city name (long_name where type is 'locality')
+      let name = ""
+      const addressComponents = geoData.results[0].address_components
+      for (const component of addressComponents) {
+        if (component.types.includes("locality")) {
+          name = component.long_name
+          break
+        }
+      }
+      console.log(lat, lon, name)
+
+    if (!name) {
+      alert('City name not found')
       return
     }
 
-    const { lat, lon, name } = geoData[0]
-
+    
     // 2️⃣ Get Weather Data (Temperature, Description, Sunrise, Sunset)
     const weatherResponse = await fetch(
       `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${OPENWEATHER_API_KEY}&units=metric`,
@@ -122,9 +184,10 @@ const fetchWeatherData = async () => {
       location: name,
       temperature: weatherInfo.main.temp,
       weather: weatherInfo.weather[0].description,
-      uvIndex: currentUV === 0 ? '0 (Nighttime)' : currentUV, // Show Nighttime if UV is 0
+      uvIndex: currentUV,
       sunshineDuration: sunshineDuration,
     }
+    location.value = ''
   } catch (error) {
     console.error('Error fetching data:', error)
     alert('Error retrieving data')
@@ -152,10 +215,40 @@ const uvClass = computed(() => {
   if (uv <= 5) return "moderate";
   if (uv <= 7) return "high";
   if (uv <= 10) return "very-high";
-  if (uv >= 11) return "extreme";
-  else return "nighttime";
+  else return "extreme";
   
 });
+
+const uvInfoMap = {
+  low: {
+    label: "Low (0-2)",
+    description: "Minimal risk. You can safely enjoy outdoor activities.",
+  },
+  moderate: {
+    label: "Moderate (3-5)",
+    description: "Moderate risk. Wear sunglasses and sunscreen should be applied every two hours, even on cloudy days.",
+  },
+  high: {
+    label: "High (6-7)",
+    description: "High risk. Seek shade during midday hours and use SPF 30+ sunscreen.",
+  },
+  "very-high": {
+    label: "Very High (8-10)",
+    description: "Very high risk. Wear protective clothing, sunglasses, and SPF 50+ sunscreen.",
+  },
+  extreme: {
+    label: "Extreme (11+)",
+    description: "Extreme risk! Avoid direct sunlight and use strong sun protection.",
+  },
+};
+const selectedUV = ref("");
+
+const selectUV = (level) => {
+  selectedUV.value = level;
+};
+
+
+
 </script>
 
 <style scoped>
@@ -172,7 +265,8 @@ const uvClass = computed(() => {
 /* Ensure Background Covers the Entire Screen */
 .home-container {
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
+  height: auto;
   background-image: url('@/assets/skybg.jpeg');
   background-size: cover;
   background-position: center;
@@ -185,7 +279,13 @@ const uvClass = computed(() => {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+  overflow-y: auto;
+  padding-top: 60px;
 
+}
+
+.home-container h1 {
+  color: rgb(80, 80, 80); 
 }
 
 /* Fix Search Bar Alignment */
@@ -195,7 +295,8 @@ const uvClass = computed(() => {
   align-items: center;
   gap: 10px;
   width: 100%;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  margin-top: 15px;
 }
 
 .search-container input {
@@ -209,7 +310,7 @@ const uvClass = computed(() => {
 
 .search-container button {
   padding: 10px 20px;
-  background-color: #ff7f00;
+  background-color: #ff8000e0;
   color: white;
   border: none;
   border-radius: 20px;
@@ -227,8 +328,8 @@ const uvClass = computed(() => {
   width: 90%;
   max-width: 800px;
   color: white;
-  margin-top: 10px;  
-  margin-bottom: 10px;
+  margin-top: 15px;  
+  margin-bottom: 15px;
 }
 
 /* Individual Sections */
@@ -255,13 +356,17 @@ const uvClass = computed(() => {
   border-radius: 15px;
   backdrop-filter: blur(5px);
   font-size: 18px;
-  color: white;
+  color: rgba(184, 183, 183, 0.846);
+}
+
+.info-item p {
+  color: rgb(80, 80, 80);
 }
 
 /* Ensure Content is Centered */
 .uv-index-display {
   width: 90%;
-  max-width: 600px;
+  max-width: 400px;
   background: rgba(255, 255, 255, 0.2);
   padding: 20px;
   border-radius: 15px;
@@ -270,7 +375,11 @@ const uvClass = computed(() => {
   margin-top: 10px;
 }
 
-/* UV Scale */
+.uv-index-display h2 {
+  color: rgb(80, 80, 80);
+}
+
+/* UV Scale button */
 .uv-scale {
   display: flex;
   flex-direction: column;
@@ -279,33 +388,67 @@ const uvClass = computed(() => {
   width: 100%;
 }
 
-.uv-scale div {
+.uv-scale button {
   padding: 12px;
   width: 100%;
   text-align: center;
   font-weight: bold;
   color: white;
   border-radius: 5px;
-} 
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
 
 /* UV Color Coding */
 .low {
-  background: rgb(129, 234, 129);
+  background: rgba(163, 237, 163, 0.93);
 }
 .moderate {
-  background: rgb(240, 240, 95);
+  background: rgba(242, 242, 127, 0.93);
   color: black;
 }
 .high {
-  background: rgb(251, 183, 56);
+  background: rgba(245, 160, 99, 0.93);
 }
 .very-high {
-  background: rgb(244, 70, 70);
+  background: rgba(241, 111, 111, 0.93);
 }
 .extreme {
-  background: rgb(198, 88, 198);
+  background: rgba(237, 134, 237, 0.93);
 }
-.nighttime {
-  background: rgb(105, 103, 105);
+
+.uv-scale button:hover {
+  opacity: 0.8;
 }
+
+.uv-info {
+  margin-top: 15px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+  text-align: center;
+}
+
+.uv-info h3 {
+  font-size: 18px;
+  font-weight: bold;
+  color: rgb(80, 80, 80);
+}
+.uv-info p {
+  font-size: 14px;
+  color: rgb(80, 80, 80);
+}
+
+
+/* Info Box */
+.info-box {
+  margin-top: 15px;
+  padding: 12px;
+  border-radius: 5px;
+  color: white;
+  font-size: 16px;
+  text-align: center;
+}
+
 </style>

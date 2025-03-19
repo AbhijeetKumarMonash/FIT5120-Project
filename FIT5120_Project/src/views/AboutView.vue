@@ -88,6 +88,7 @@ h2 {
   overflow-x: hidden;
   color: white;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  padding-top: 60px;
 }
 
 /* Ensure Full Width and Centering */
@@ -113,6 +114,7 @@ h2 {
   width: 90%;
   max-width: 1500px; /* Ensures it doesn't go too wide */
   margin: auto; /* Centers the text container */
+
 }
 
 /* Fix Text Being Cut Off */

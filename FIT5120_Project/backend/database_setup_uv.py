@@ -4,8 +4,8 @@ import glob
 import os
 
 # Define the database path
-DATABASE_PATH = "C:/Users/Abhijeet/FIT5120-Project/FIT5120_Project/backend/skin_cancer.db"
-DATA_FOLDER = "C:/Users/Abhijeet/FIT5120-Project/FIT5120_Project/backend/data_uv_index"
+DATABASE_PATH = "FIT5120_Project/backend/skin_cancer.db"
+DATA_FOLDER = "FIT5120_Project/backend/data_uv_index"
 
 # Connect to SQLite
 conn = sqlite3.connect(DATABASE_PATH)

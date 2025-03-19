@@ -74,6 +74,7 @@ onMounted(fetchGraph)
   max-width: 1600px;
   margin: 20px auto;
   padding: 20px;
+  padding-top: 60px;
 }
 
 /* Graph Display */
