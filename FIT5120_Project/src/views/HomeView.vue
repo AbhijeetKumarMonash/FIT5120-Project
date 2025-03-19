@@ -44,6 +44,8 @@
       </div>
     </div>
 
+    <SkinTone :uvIndex="uvIndexComputed" />
+
     <!-- UV Index Criteria -->
     <div class="uv-index-display">
       <h2>UV Index Criteria</h2>
@@ -63,7 +65,7 @@
       </div>
       
     </div>
-    <SkinTone :uvIndex="uvIndexComputed" />
+    
   </div>
 </template>
 

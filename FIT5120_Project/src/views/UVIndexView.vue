@@ -3,8 +3,19 @@
     <h1 font="bold">UV Index Trends in Australia</h1>
 
     <!-- Display the graph -->
-    <img v-if="graphUrl" :src="graphUrl" alt="UV Index Heatmap" class="graph-frame" />
-    <p v-else>Loading...</p>
+    <!-- <img v-if="graphUrl" :src="graphUrl" alt="UV Index Heatmap" class="graph-frame" />
+    <p v-else>Loading...</p> -->
+
+    <div id="chart">
+      <div v-if="loading">Loading...</div>
+      <apexchart
+        v-else
+        type="heatmap"
+        height="350"
+        :options="chartOptions"
+        :series="series"
+      ></apexchart>
+    </div>
 
     <!-- Data Explanation Section -->
     <div class="graph-explanation">
@@ -51,21 +62,74 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 
-const graphUrl = ref('')
+// const graphUrl = ref('')
 
-const fetchGraph = async () => {
+// const fetchGraph = async () => {
+//   try {
+//     const response = await fetch('https://fit5120-project-1.onrender.com/api/uv_index_trends')
+//     const data = await response.json()
+//     if (data.status === 'success') {
+//       graphUrl.value = data.graph_url
+//     }
+//   } catch (error) {
+//     console.error('Error fetching UV Index graph:', error)
+//   }
+// }
+
+// onMounted(fetchGraph)
+
+
+/////
+const loading = ref(true);
+const series = ref([]); 
+const chartOptions = ref({
+  chart: {
+    height: 350,
+    type: "heatmap",
+  },
+  dataLabels: {
+    enabled: false,
+  },
+  colors: ["#ff6a41"],
+  title: {
+    text: "UV Index HeatMap (States vs. Months)",
+  },
+  xaxis: {
+    categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+  },
+});
+
+// get UV Index
+const fetchData = async () => {
   try {
-    const response = await fetch('https://fit5120-project-1.onrender.com/api/uv_index_trends')
-    const data = await response.json()
-    if (data.status === 'success') {
-      graphUrl.value = data.graph_url
+    const response = await fetch("http://127.0.0.1:5001/api/uv_index");
+    const data = await response.json();
+
+    if (data.status === "success") {
+      const groupedData = {};
+      data.data.forEach(({ location, month, uv_index }) => {
+        if (!groupedData[location]) {
+          groupedData[location] = Array(12).fill(null);
+        }
+        groupedData[location][month - 1] = parseFloat(uv_index).toFixed(2);
+      });
+
+      series.value = Object.keys(groupedData).map((state) => ({
+        name: state,
+        data: groupedData[state].map((value, index) => ({
+          x: chartOptions.value.xaxis.categories[index],
+          y: value ? parseFloat(value) : 0, 
+        })),
+      }));
+
+      loading.value = false;
     }
   } catch (error) {
-    console.error('Error fetching UV Index graph:', error)
+    console.error("Error fetching UV data:", error);
   }
-}
+};
 
-onMounted(fetchGraph)
+onMounted(fetchData);
 </script>
 
 <style scoped>
@@ -74,7 +138,7 @@ onMounted(fetchGraph)
   max-width: 1600px;
   margin: 20px auto;
   padding: 20px;
-  padding-top: 60px;
+  padding-top: 70px;
 }
 
 /* Graph Display */
@@ -97,7 +161,7 @@ onMounted(fetchGraph)
 }
 
 .graph-explanation h2 {
-  color: #ff6600;
+  color: #fa831b;
   font-size: 1.8rem;
   margin-bottom: 10px;
 }
