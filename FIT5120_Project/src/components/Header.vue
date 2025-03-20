@@ -14,9 +14,6 @@
             <router-link to="/faq" class="nav-link" active-class="active">FAQ</router-link>
           </li>
           <li>
-            <router-link to="/trends" class="nav-link" active-class="active">Trends</router-link>
-          </li>
-          <li>
             <router-link to="/SkinCancerTrends" class="nav-link" active-class="active"
               >SkinCancerTrends</router-link
             >

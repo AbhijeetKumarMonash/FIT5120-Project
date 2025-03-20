@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
 import AboutView from '@/views/AboutView.vue'
 import FAQView from '@/views/FAQView.vue'
-import trends from '@/views/trends.vue'
 import SkinCancerTrends from '@/views/SkinCancerTrends.vue'
 import UVIndexView from '@/views/UVIndexView.vue'
 
@@ -21,11 +20,6 @@ const routes = [
     path: '/FAQ',
     name: 'FAQ',
     component: FAQView,
-  },
-  {
-    path: '/trends',
-    name: 'trends',
-    component: trends,
   },
   {
     path: '/SkinCancerTrends',
