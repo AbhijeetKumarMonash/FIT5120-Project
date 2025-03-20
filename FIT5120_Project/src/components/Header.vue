@@ -30,6 +30,7 @@
 </template>
 
 <style scoped>
+
 /* Full width fixed header */
 .fixed-top {
   width: 100%; /* Ensure it takes the full viewport width */
@@ -43,7 +44,9 @@
 /* Header container styling */
 .header-container {
   display: flex;
-  justify-content: space-between; /* Space between title and nav */
+  flex-shrink: 1;  /*  */
+  flex-wrap: wrap;
+  justify-content: flex-end;
   align-items: center;
   padding: 15px 20px;
   color: white;
@@ -57,6 +60,8 @@
   font-size: 1.75rem;
   font-weight: bold;
   margin: 0;
+  flex-grow: 1; 
+  text-align: left;
 }
 
 /* Navigation Links */

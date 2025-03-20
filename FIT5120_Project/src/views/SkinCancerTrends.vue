@@ -50,7 +50,8 @@ const graphUrl = ref('')
 
 onMounted(async () => {
   try {
-    const response = await fetch('https://fit5120-project-1.onrender.com/api/skin_cancer_trends')
+    //const response = await fetch('https://fit5120-project-1.onrender.com/api/skin_cancer_trends')
+    const response = await fetch('http://127.0.0.1:5001/api/skin_cancer_trends')
     const data = await response.json()
     if (data.status === 'success') {
       graphUrl.value = data.graph_url
@@ -67,6 +68,7 @@ onMounted(async () => {
   max-width: 1600px;
   margin: 20px auto;
   padding: 20px;
+  padding-top: 60px;
 }
 
 /* Graph Display */
@@ -88,7 +90,7 @@ onMounted(async () => {
 }
 
 .graph-explanation h2 {
-  color: #d9534f;
+  color: #f47130;
   font-size: 1.8rem;
   margin-bottom: 10px;
 }

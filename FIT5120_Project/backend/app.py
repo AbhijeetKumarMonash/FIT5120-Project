@@ -103,5 +103,30 @@ def generate_plotly_graph():
 def index():
     return "Hello from Flask!"
 
+@app.route('/api/uv_index', methods=['GET'])
+def get_uv_index():
+    conn = sqlite3.connect(DATABASE_PATH)
+    cursor = conn.cursor()
+
+    query = """
+    SELECT location, month, uv_index
+    FROM uv_index_data
+    """
+    cursor.execute(query)
+    rows = cursor.fetchall()
+    conn.close()
+
+    # organize data
+    uv_data = []
+    for row in rows:
+        location, month, uv_index = row
+        uv_data.append({
+            "location": location,   # (e.g., "NSW", "VIC")
+            "month": month,         # (1-12)
+            "uv_index": uv_index    # UV index
+        })
+
+    return jsonify({"status": "success", "data": uv_data})
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(port=5001,debug=True)

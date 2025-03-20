@@ -2,6 +2,8 @@
   <div class="home-container">
     <br />
     <br />
+    <br />
+    <br />
     <h1>UV Index Tracker</h1>
 
     <!-- Manual Search Input -->

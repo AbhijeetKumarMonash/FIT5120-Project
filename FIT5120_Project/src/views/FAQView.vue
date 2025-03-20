@@ -207,7 +207,7 @@ h1 {
 .faq-question {
   width: 100%;
   text-align: left;
-  background: #0056b3;
+  background: #015dbfe2;
   color: white;
   font-size: 18px;
   padding: 15px;

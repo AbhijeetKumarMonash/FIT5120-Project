@@ -3,10 +3,11 @@ import Header from './components/Header.vue'
 </script>
 
 <template>
+  <Header />
   <div class="main-container">
     
     <main class="content">
-      <Header />
+      
       <router-view></router-view>
     </main>
   </div>
@@ -23,7 +24,9 @@ import Header from './components/Header.vue'
   justify-content: flex-start;
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
+  overflow-y: auto;
+  overflow-x: hidden; 
+  
 }
 
 /* Ensure Content Fills Entire Width */
