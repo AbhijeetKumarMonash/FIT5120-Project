@@ -160,7 +160,7 @@ const chartOptions = ref({
 
 const fetchData = async () => {
   try {
-    const response = await fetch("http://127.0.0.1:5001/api/uv_index");
+    const response = await fetch("https://fit5120-project-1.onrender.com/api/uv_index");
     const result = await response.json();
 
     console.log("API Response Data:", result);
